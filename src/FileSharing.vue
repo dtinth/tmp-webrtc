@@ -62,6 +62,7 @@ export default defineComponent({
 
     const incoming: IncomingFileTransfer[] = reactive([])
     const outgoing: OutgoingFileTransfer[] = reactive([])
+    const fileListeners: ((name: string, blob: Blob) => void)[] = []
 
     const sendFile = (name: string, blob: Blob) => {
       offerings.set(uuid(), { name, blob, transfers: new Map() })
@@ -116,6 +117,9 @@ export default defineComponent({
               })
               fileTransfer.on('done', (file) => {
                 incomingTransfer.status = 'Receiving completed'
+                for (const onFile of fileListeners) {
+                  onFile(msg.offer.name, file)
+                }
               })
             })
             console.log('Accepting file', msg.offer.name)
@@ -185,15 +189,28 @@ export default defineComponent({
             sendFile(e.data.result.file.name, e.data.result.blob)
           }
         })
-        targetWindow.postMessage(
-          {
-            jsonrpc: '2.0',
-            method: 'tmp/getOpenedFile',
-            params: { sessionId },
-            id: 'getfile',
-          },
-          '*'
-        )
+        if (sending) {
+          targetWindow.postMessage(
+            {
+              jsonrpc: '2.0',
+              method: 'tmp/getOpenedFile',
+              params: { sessionId },
+              id: 'getfile',
+            },
+            '*'
+          )
+        }
+        fileListeners.push((name, blob) => {
+          targetWindow.postMessage(
+            {
+              jsonrpc: '2.0',
+              method: 'tmp/newFile',
+              params: { sessionId, name, blob },
+              id: 'getfile',
+            },
+            '*'
+          )
+        })
       }
       const match = location.hash.match(/tmpsessionid=([\w-]+)/)
       if (window.opener && match) {
