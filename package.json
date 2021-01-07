@@ -2,10 +2,13 @@
   "name": "fresh-app",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port=3001",
     "build": "vuedx-typecheck . && vite build"
   },
   "dependencies": {
+    "p2pt": "^1.5.0",
+    "simple-peer": "^9.9.3",
+    "simple-peer-files": "^1.2.3",
     "vue": "^3.0.5"
   },
   "devDependencies": {
