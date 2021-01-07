@@ -1,0 +1,18 @@
+{
+  "name": "tmp-webrtc",
+  "description": "Send and receive files via WebRTC",
+  "contributes": {
+    "integrations": {
+      "send": {
+        "title": "Send via WebRTC",
+        "accept": ["*"],
+        "url": "https://tmp-webrtc.spacet.me/?send"
+      },
+      "receive": {
+        "title": "Receive via WebRTC",
+        "action": "receive",
+        "url": "https://tmp-webrtc.spacet.me/?receive"
+      }
+    }
+  }
+}
